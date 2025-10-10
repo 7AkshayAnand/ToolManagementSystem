@@ -1,5 +1,6 @@
 package com.toolmanagementsystem.demo.entity;
 
+import com.toolmanagementsystem.demo.enums.SiteLocation;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,10 +26,9 @@ public class Facility {
     private String facilityName;
 
     @Column(nullable = false)
-    private String location; // City/State
+    private SiteLocation location; // City/State
 
-    @Column(nullable = false)
-    private String country;
+
 
     @Column(nullable = false)
     private String siteType; // e.g., "FAB", "Assembly", "Test"
@@ -37,10 +37,13 @@ public class Facility {
     private String description;
 
     // Optional notes
+    @ElementCollection
+    @CollectionTable(name = "facility_systems", joinColumns = @JoinColumn(name = "facility_id"))
+    @Column(name = "system_name")
     private List<String> facilitySystems = new ArrayList<>();
 
-    @Column
-    private Boolean isActive = true; // Facility operational or not
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private Boolean isActive; // Facility operational or not
 
     @OneToMany(mappedBy = "facility", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tool> tools = new ArrayList<>();

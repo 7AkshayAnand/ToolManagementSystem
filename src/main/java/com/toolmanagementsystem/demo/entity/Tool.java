@@ -1,5 +1,7 @@
 package com.toolmanagementsystem.demo.entity;
 
+import com.toolmanagementsystem.demo.enums.ToolStatus;
+import com.toolmanagementsystem.demo.enums.ToolType;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,7 +17,7 @@ public class Tool extends AuditableEntity{
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String toolType; // e.g., "Etcher"
+    private ToolType toolType; // e.g., "Etcher"
 
     @Column(nullable = false)
     private String manufacturer;
@@ -28,7 +30,7 @@ public class Tool extends AuditableEntity{
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status; // e.g., "NEW", "PENDING", "ACCEPTED"
+    private ToolStatus status; // e.g., "NEW", "PENDING", "ACCEPTED"
 
     @Column(nullable = false)
     private Integer quantity ; // Number of tools of this type at the facility

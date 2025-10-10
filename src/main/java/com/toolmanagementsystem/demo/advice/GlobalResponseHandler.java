@@ -1,5 +1,6 @@
 package com.toolmanagementsystem.demo.advice;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import java.util.List;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
 
     @Override
@@ -31,9 +33,10 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
 
 
         if(body instanceof ApiResponse<?>|| isAllowed) {
+            log.error("error hapen inside body wala code "+body.getClass().getName());
             return body;
         }
-
+       log.error("error hapen outside wala code "+body.getClass().getName());
         return new ApiResponse<>(body);
     }
 }

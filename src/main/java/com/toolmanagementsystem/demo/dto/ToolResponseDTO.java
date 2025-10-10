@@ -1,5 +1,6 @@
 package com.toolmanagementsystem.demo.dto;
 
+import com.toolmanagementsystem.demo.enums.ToolStatus;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ public class ToolResponseDTO {
     public String manufacturer;
     public String modelNumber;
     public String serialNumber;
-    public String status;
+    public ToolStatus status;
     public Integer quantity;
     public String remarks;
     public Long facilityId;
