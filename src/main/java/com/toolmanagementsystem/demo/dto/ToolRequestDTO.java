@@ -1,5 +1,7 @@
 package com.toolmanagementsystem.demo.dto;
 
+import com.toolmanagementsystem.demo.enums.ToolStatus;
+import com.toolmanagementsystem.demo.enums.ToolType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,7 +17,7 @@ public class ToolRequestDTO {
     public String toolName;
 
     @NotBlank(message = "Tool type is required")
-    public String toolType;
+    public ToolType toolType;
 
     @NotBlank(message = "Manufacturer is required")
     public String manufacturer;
@@ -25,7 +27,7 @@ public class ToolRequestDTO {
     public String serialNumber;
 
     @NotBlank(message = "Status is required")
-    public String status;
+    public ToolStatus status;
 
     @NotNull(message = "Quantity is required")
     public Integer quantity;

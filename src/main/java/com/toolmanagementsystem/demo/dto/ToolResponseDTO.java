@@ -21,6 +21,7 @@ public class ToolResponseDTO {
     public Integer quantity;
     public String remarks;
     public Long facilityId;
+    public String location;
 
     // Optional audit fields
     public LocalDateTime createdDate;

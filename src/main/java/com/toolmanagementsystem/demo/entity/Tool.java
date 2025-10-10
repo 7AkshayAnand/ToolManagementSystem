@@ -13,6 +13,7 @@ public class Tool extends AuditableEntity{
     @Column(nullable = false)
     private String toolName; // e.g., "ETCHER-5000A"
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private String toolType; // e.g., "Etcher"
 
@@ -25,6 +26,7 @@ public class Tool extends AuditableEntity{
     @Column
     private String serialNumber;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private String status; // e.g., "NEW", "PENDING", "ACCEPTED"
 

@@ -1,0 +1,16 @@
+package com.toolmanagementsystem.demo.enums;
+
+public enum ToolType {
+    PHOTOLITHOGRAPHY_STEPPER,
+    ETCHER,
+    ION_IMPLANTER,
+    DEPOSITION_SYSTEM,
+    TEST_HANDLER,
+    ASSEMBLY_MACHINE,
+    BURN_IN_OVEN,
+    PROBE_STATION,
+    WAFER_SORTER,
+    WET_BENCH_TOOL,
+    SPIN_COATER,
+    LITHOGRAPHY_MASK_INSPECTOR
+}
