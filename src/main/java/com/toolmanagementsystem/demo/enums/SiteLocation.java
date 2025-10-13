@@ -2,6 +2,7 @@ package com.toolmanagementsystem.demo.enums;
 
 public enum SiteLocation {
     HYDERABAD,
+    BANGALORE,
     GUJARAT,
     IDAHO,
     BOISE,

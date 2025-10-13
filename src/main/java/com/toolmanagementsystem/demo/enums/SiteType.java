@@ -2,6 +2,7 @@ package com.toolmanagementsystem.demo.enums;
 
 
 public enum SiteType {
+    FAB,
     FABRICATION_PLANT,
     MANUFACTURING_PLANT,
     ASSEMBLY_LINE,

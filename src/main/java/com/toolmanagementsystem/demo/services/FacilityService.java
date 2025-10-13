@@ -2,16 +2,26 @@ package com.toolmanagementsystem.demo.services;
 
 import com.toolmanagementsystem.demo.dto.FacilityRequestDTO;
 import com.toolmanagementsystem.demo.dto.FacilityResponseDTO;
+import com.toolmanagementsystem.demo.dto.QueryParamsDto;
 import com.toolmanagementsystem.demo.entity.Facility;
+import com.toolmanagementsystem.demo.enums.SiteLocation;
+import com.toolmanagementsystem.demo.enums.SiteType;
 import com.toolmanagementsystem.demo.repository.FacilityRepository;
+import com.toolmanagementsystem.demo.spefication.FacilitySpecification;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -79,4 +89,55 @@ public class FacilityService {
         return responseDTOs;
     }
 
+    public List<FacilityResponseDTO> getAllFacilityDetail() {
+
+        List<Facility> facilities=facilityRepository.findAll();
+
+        List<FacilityResponseDTO> responseDTOs = facilities.stream()
+                .map(f -> modelMapper.map(f, FacilityResponseDTO.class))
+                .toList();
+        return responseDTOs;
+    }
+
+    public List<FacilityResponseDTO> getFacilityByPage(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id").descending());
+        Page<Facility> facilityPage = facilityRepository.findAll(pageable);
+
+        return facilityPage.getContent()
+                .stream()
+                .map(facility -> modelMapper.map(facility, FacilityResponseDTO.class))
+                .collect(Collectors.toList());
+    }
+
+
+    public List<FacilityResponseDTO> searchFacilities(QueryParamsDto queryParams) {
+
+        // 1️⃣ Convert Strings to enums safely
+        SiteLocation siteLocationEnum = queryParams.getSiteLocation() == null
+                ? null
+                : SiteLocation.valueOf(queryParams.getSiteLocation().toUpperCase());
+
+        SiteType siteTypeEnum = queryParams.getSiteType() == null
+                ? null
+                : SiteType.valueOf(queryParams.getSiteType().toUpperCase());
+
+
+// 2️⃣ Pass enums to Specification
+        Specification<Facility> specification = Specification.allOf(
+                FacilitySpecification.hasSiteLocation(siteLocationEnum),
+                FacilitySpecification.hasSiteType(siteTypeEnum),
+                FacilitySpecification.hasFacilityCode(queryParams.getFacilityCode()),
+                FacilitySpecification.isActive(queryParams.getIsActive())
+        );
+
+
+        List<Facility> facilities = facilityRepository.findAll(specification);
+
+        // Map each Facility to FacilityResponseDTO using ModelMapper
+        List<FacilityResponseDTO> facilityDTOs = facilities.stream()
+                .map(facility -> modelMapper.map(facility, FacilityResponseDTO.class))
+                .toList();
+
+        return facilityDTOs;
+    }
 }

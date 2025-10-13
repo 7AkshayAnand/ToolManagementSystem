@@ -1,6 +1,7 @@
 package com.toolmanagementsystem.demo.entity;
 
 import com.toolmanagementsystem.demo.enums.SiteLocation;
+import com.toolmanagementsystem.demo.enums.SiteType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,13 +26,15 @@ public class Facility {
     @Column(nullable = false)
     private String facilityName;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "site_location", nullable = false)
+    private SiteLocation siteLocation;
+// City/State
+
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SiteLocation location; // City/State
-
-
-
-    @Column(nullable = false)
-    private String siteType; // e.g., "FAB", "Assembly", "Test"
+    private SiteType siteType; // e.g., "FAB", "Assembly", "Test"
 
     @Column(length = 1000)
     private String description;

@@ -2,6 +2,10 @@ package com.toolmanagementsystem.demo.controllers;
 
 import com.toolmanagementsystem.demo.dto.FacilityRequestDTO;
 import com.toolmanagementsystem.demo.dto.FacilityResponseDTO;
+import com.toolmanagementsystem.demo.dto.QueryParamsDto;
+import com.toolmanagementsystem.demo.entity.Facility;
+import com.toolmanagementsystem.demo.enums.SiteLocation;
+import com.toolmanagementsystem.demo.enums.SiteType;
 import com.toolmanagementsystem.demo.services.FacilityService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -44,4 +48,26 @@ public class FacilityController {
         List<FacilityResponseDTO> responseDTOs = facilityService.createFacilityBulk(facilityRequestDTOList);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTOs);
     }
+
+
+    @GetMapping("/getAllFacitliy")
+    public ResponseEntity<List<FacilityResponseDTO>> getAllFacility(){
+        List<FacilityResponseDTO> responseDTOs = facilityService.getAllFacilityDetail();
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTOs);
+    }
+
+    @GetMapping("/getFacilityByPage/{pageNumber}")
+    public ResponseEntity<List<FacilityResponseDTO>> getFacilityByPage(@PathVariable int pageNumber,@RequestParam(defaultValue = "5") int pageSize) {
+
+        List<FacilityResponseDTO> facilities = facilityService.getFacilityByPage(pageNumber, pageSize);
+        return ResponseEntity.ok(facilities);
+    }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<List<FacilityResponseDTO>> searchFacilities(@ModelAttribute QueryParamsDto queryParams) {
+        List<FacilityResponseDTO> facilities = facilityService.searchFacilities(queryParams);
+        return ResponseEntity.ok(facilities);
+    }
+
 }
