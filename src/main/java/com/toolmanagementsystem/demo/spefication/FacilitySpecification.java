@@ -3,12 +3,15 @@ package com.toolmanagementsystem.demo.spefication;
 import com.toolmanagementsystem.demo.entity.Facility;
 import com.toolmanagementsystem.demo.enums.SiteLocation;
 import com.toolmanagementsystem.demo.enums.SiteType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
+@Slf4j
 
 public class FacilitySpecification {
 
     // siteLocation filter
     public static Specification<Facility> hasSiteLocation(SiteLocation siteLocation) {
+         log.info("inside specification the location value is  : "+siteLocation);
         return (root, query, cb) -> {
             if (siteLocation == null) return null;
             return cb.equal(cb.upper(root.get("siteLocation").as(String.class)), siteLocation.name().toUpperCase());

@@ -66,6 +66,7 @@ public class FacilityController {
 
     @GetMapping("/search")
     public ResponseEntity<List<FacilityResponseDTO>> searchFacilities(@ModelAttribute QueryParamsDto queryParams) {
+         log.info("the location is {} ",queryParams.getSiteLocation());
         List<FacilityResponseDTO> facilities = facilityService.searchFacilities(queryParams);
         return ResponseEntity.ok(facilities);
     }

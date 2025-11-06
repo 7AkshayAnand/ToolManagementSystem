@@ -113,9 +113,12 @@ public class FacilityService {
     public List<FacilityResponseDTO> searchFacilities(QueryParamsDto queryParams) {
 
         // 1️⃣ Convert Strings to enums safely
+        log.info("now we are in service package and location is "+queryParams.getSiteLocation());
         SiteLocation siteLocationEnum = queryParams.getSiteLocation() == null
                 ? null
                 : SiteLocation.valueOf(queryParams.getSiteLocation().toUpperCase());
+
+        log.info("converted sitelocation to enum and value is "+siteLocationEnum);
 
         SiteType siteTypeEnum = queryParams.getSiteType() == null
                 ? null
@@ -132,11 +135,13 @@ public class FacilityService {
 
 
         List<Facility> facilities = facilityRepository.findAll(specification);
-
+        log.info("after db call to findall method  "+facilities.get(0).getSiteLocation());
         // Map each Facility to FacilityResponseDTO using ModelMapper
         List<FacilityResponseDTO> facilityDTOs = facilities.stream()
                 .map(facility -> modelMapper.map(facility, FacilityResponseDTO.class))
                 .toList();
+
+        log.info("before returning the value dto "+facilityDTOs.get(0).getSiteLocation());
 
         return facilityDTOs;
     }
