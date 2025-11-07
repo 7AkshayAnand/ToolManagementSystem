@@ -1,20 +1,22 @@
 package com.toolmanagementsystem.demo.dto;
 
+import com.toolmanagementsystem.demo.enums.SiteLocation;
 import com.toolmanagementsystem.demo.enums.ToolStatus;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Builder;
+import com.toolmanagementsystem.demo.enums.ToolType;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
 public class ToolResponseDTO {
 
     public Long id;
     public String toolName;
-    public String toolType;
+    public ToolType toolType;
     public String manufacturer;
     public String modelNumber;
     public String serialNumber;
@@ -22,7 +24,7 @@ public class ToolResponseDTO {
     public Integer quantity;
     public String remarks;
     public Long facilityId;
-    public String location;
+    public SiteLocation location;
 
     // Optional audit fields
     public LocalDateTime createdDate;

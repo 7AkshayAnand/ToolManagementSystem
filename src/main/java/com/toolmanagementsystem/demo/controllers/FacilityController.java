@@ -26,6 +26,22 @@ public class FacilityController {
     private final FacilityService facilityService;
 
 
+
+
+
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<FacilityResponseDTO> getById(@PathVariable Long id){
+      FacilityResponseDTO facilityResponseDTO=facilityService.getById(id);
+
+      return new ResponseEntity<>(facilityResponseDTO,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteById/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable Long id) {
+      String response=  facilityService.deleteById(id);
+        return new ResponseEntity<>(response,HttpStatus.NO_CONTENT);  // HTTP 204
+    }
+
     @PostMapping("/singleEntry")
     public ResponseEntity<FacilityResponseDTO> createFacility(@Valid @RequestBody FacilityRequestDTO facilityRequestDTO) {
         // Call the service layer to save the facility

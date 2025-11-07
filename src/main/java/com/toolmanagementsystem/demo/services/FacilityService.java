@@ -6,6 +6,7 @@ import com.toolmanagementsystem.demo.dto.QueryParamsDto;
 import com.toolmanagementsystem.demo.entity.Facility;
 import com.toolmanagementsystem.demo.enums.SiteLocation;
 import com.toolmanagementsystem.demo.enums.SiteType;
+import com.toolmanagementsystem.demo.exceptions.ResourceNotFoundException;
 import com.toolmanagementsystem.demo.repository.FacilityRepository;
 import com.toolmanagementsystem.demo.spefication.FacilitySpecification;
 import jakarta.transaction.Transactional;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -144,5 +146,20 @@ public class FacilityService {
         log.info("before returning the value dto "+facilityDTOs.get(0).getSiteLocation());
 
         return facilityDTOs;
+    }
+
+    public FacilityResponseDTO getById(Long id) {
+        Facility facility=facilityRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Facility with given id does not exists"));
+        return  modelMapper.map(facility,FacilityResponseDTO.class);
+    }
+
+    public String deleteById(Long id) {
+
+        Facility facility=facilityRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Facility with given id does not exists"));
+        if(facility!=null){
+            facilityRepository.deleteById(id);
+        }
+
+        return "deletion has been done successfully";
     }
 }

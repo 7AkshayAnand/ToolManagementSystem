@@ -7,19 +7,20 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 public class ToolRequestDTO {
 
     @NotBlank(message = "Tool name is required")
     public String toolName;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "Tool type is required")
     public ToolType toolType;
 
     @NotBlank(message = "Manufacturer is required")
@@ -30,7 +31,7 @@ public class ToolRequestDTO {
     public String serialNumber;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "Status is required")
+
     public ToolStatus status;
 
     @NotNull(message = "Quantity is required")

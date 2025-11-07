@@ -3,9 +3,17 @@ package com.toolmanagementsystem.demo.entity;
 import com.toolmanagementsystem.demo.enums.ToolStatus;
 import com.toolmanagementsystem.demo.enums.ToolType;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "tools")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+
 public class Tool extends AuditableEntity{
 
     @Id
