@@ -37,6 +37,27 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
             return body;
         }
        log.error("error hapen outside wala code "+body.getClass().getName());
+        // 1. Do not wrap raw bytes
+        if (body instanceof byte[]) {
+            return body;
+        }
+
+// 2. Do not wrap ResponseEntity<byte[]>
+        if (body instanceof org.springframework.http.ResponseEntity<?> entity) {
+            if (entity.getBody() instanceof byte[]) {
+                return body;
+            }
+        }
+
+// 3. Do not wrap resources (InputStreamResource / ByteArrayResource)
+        if (body instanceof org.springframework.core.io.Resource) {
+            return body;
+        }
+
+// 4. Do not wrap file-download headers
+        if (response.getHeaders().containsKey("Content-Disposition")) {
+            return body;
+        }
         return new ApiResponse<>(body);
     }
 }

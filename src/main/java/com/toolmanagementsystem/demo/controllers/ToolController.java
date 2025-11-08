@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+
 @RestController
 @RequestMapping("/tool")
 @AllArgsConstructor
@@ -49,6 +51,23 @@ public class ToolController {
          BulkImportResult result=toolService.importTools(file);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("getById/{id}")
+    public ResponseEntity<ToolResponseDTO> getToolById(@PathVariable Long id){
+        return toolService.getToolById(id);
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportTools() {
+
+        ByteArrayInputStream in = toolService.exportTools();
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=tools.xlsx")
+                .body(in.readAllBytes());
+    }
+
+
 }
 
 

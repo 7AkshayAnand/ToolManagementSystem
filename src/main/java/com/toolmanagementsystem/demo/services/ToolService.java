@@ -7,6 +7,7 @@ import com.toolmanagementsystem.demo.entity.Facility;
 import com.toolmanagementsystem.demo.entity.Tool;
 import com.toolmanagementsystem.demo.repository.FacilityRepository;
 import com.toolmanagementsystem.demo.repository.ToolRepository;
+import com.toolmanagementsystem.demo.utility.ExcelToolExporter;
 import com.toolmanagementsystem.demo.utility.ExcelToolParser;
 import io.swagger.v3.oas.annotations.servers.Server;
 import jakarta.transaction.Transactional;
@@ -15,10 +16,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +35,7 @@ public class ToolService {
     private final ToolRepository toolRepository;
     private final FacilityRepository facilityRepository;
     private final ModelMapper modelMapper;
+    private final ExcelToolExporter exporter;
 
 
     private final ExcelToolParser excelToolParser;
@@ -123,5 +127,28 @@ public class ToolService {
                 .build();
     }
 
+
+
+    public ByteArrayInputStream exportTools() {
+
+        List<Tool> tools = toolRepository.findAll();
+
+        List<ToolResponseDTO> dtoList = tools.stream()
+                .map(t -> modelMapper.map(t, ToolResponseDTO.class))
+                .toList();
+
+        return exporter.exportTools(dtoList);
+    }
+
+
+    public ResponseEntity<ToolResponseDTO> getToolById(Long id) {
+
+        Tool tool = toolRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tool not found"));
+
+        ToolResponseDTO dto = modelMapper.map(tool, ToolResponseDTO.class);
+
+        return ResponseEntity.ok(dto);
+    }
 
 }
