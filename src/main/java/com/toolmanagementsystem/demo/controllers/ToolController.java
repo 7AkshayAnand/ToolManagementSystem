@@ -1,6 +1,7 @@
 package com.toolmanagementsystem.demo.controllers;
 
 import com.toolmanagementsystem.demo.dto.BulkImportResult;
+import com.toolmanagementsystem.demo.dto.ToolPatchDTO;
 import com.toolmanagementsystem.demo.dto.ToolRequestDTO;
 import com.toolmanagementsystem.demo.dto.ToolResponseDTO;
 import com.toolmanagementsystem.demo.services.ToolService;
@@ -66,6 +67,28 @@ public class ToolController {
                 .header("Content-Disposition", "attachment; filename=tools.xlsx")
                 .body(in.readAllBytes());
     }
+
+    @DeleteMapping("/delete/{Id}")
+    public ResponseEntity<String> deleteById(Long Id){
+        String result=toolService.deleteById(Id);
+        return new ResponseEntity<>(result,HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping("/updateTool/{id}")
+    public ResponseEntity<ToolResponseDTO> patchTool(@PathVariable Long id,@RequestBody ToolPatchDTO patchDto) {
+
+        ToolResponseDTO updatedTool = toolService.updatePartial(id, patchDto);
+        return ResponseEntity.ok(updatedTool);
+    }
+
+    @PutMapping("/updateAll/{id}")
+    public ResponseEntity<ToolResponseDTO> putTool(@PathVariable Long id,@RequestBody @Valid ToolRequestDTO toolRequestDTO) {
+
+        ToolResponseDTO updatedTool = toolService.updateFull(id, toolRequestDTO);
+        return ResponseEntity.ok(updatedTool);
+    }
+
+
 
 
 }

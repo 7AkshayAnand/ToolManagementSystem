@@ -1,6 +1,7 @@
 package com.toolmanagementsystem.demo.services;
 
 import com.toolmanagementsystem.demo.dto.BulkImportResult;
+import com.toolmanagementsystem.demo.dto.ToolPatchDTO;
 import com.toolmanagementsystem.demo.dto.ToolRequestDTO;
 import com.toolmanagementsystem.demo.dto.ToolResponseDTO;
 import com.toolmanagementsystem.demo.entity.Facility;
@@ -36,9 +37,8 @@ public class ToolService {
     private final FacilityRepository facilityRepository;
     private final ModelMapper modelMapper;
     private final ExcelToolExporter exporter;
-
-
     private final ExcelToolParser excelToolParser;
+
     public ToolResponseDTO enterTool(ToolRequestDTO toolRequestDTO) {
 
         Facility facility = facilityRepository.findById(toolRequestDTO.facilityId)
@@ -150,5 +150,81 @@ public class ToolService {
 
         return ResponseEntity.ok(dto);
     }
+
+    public String deleteById(Long id) {
+        Tool tool = toolRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tool not found"));
+
+        toolRepository.deleteById(id);
+
+        return "Tool Successfully Deleted";
+
+    }
+
+
+    @Transactional
+    public ToolResponseDTO updatePartial(Long id, ToolPatchDTO patchDto) {
+
+        Tool tool = toolRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tool not found"));
+
+        // Update only non-null fields
+        if (patchDto.getToolName() != null) tool.setToolName(patchDto.getToolName());
+        if (patchDto.getToolType() != null) tool.setToolType(patchDto.getToolType());
+        if (patchDto.getManufacturer() != null) tool.setManufacturer(patchDto.getManufacturer());
+        if (patchDto.getModelNumber() != null) tool.setModelNumber(patchDto.getModelNumber());
+        if (patchDto.getSerialNumber() != null) tool.setSerialNumber(patchDto.getSerialNumber());
+
+        if (patchDto.getQuantity() != null) tool.setQuantity(patchDto.getQuantity());
+        if (patchDto.getRemarks() != null) tool.setRemarks(patchDto.getRemarks());
+
+        // Handle facility change
+        if (patchDto.getFacilityId() != null &&
+                !patchDto.getFacilityId().equals(tool.getFacility().getId())) {
+
+            Facility newFacility = facilityRepository.findById(patchDto.getFacilityId())
+                    .orElseThrow(() -> new RuntimeException("Facility not found"));
+            tool.setFacility(newFacility);
+        }
+
+        Tool savedTool = toolRepository.save(tool);
+
+        ToolResponseDTO response = modelMapper.map(savedTool, ToolResponseDTO.class);
+        response.setFacilityId(savedTool.getFacility().getId());
+        response.setLocation(savedTool.getFacility().getSiteLocation());
+
+        return response;
+    }
+
+    public ToolResponseDTO updateFull(Long id, ToolRequestDTO dto) {
+        Tool existingTool = toolRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tool not found"));
+
+        // Map all fields from DTO onto existing entity
+        existingTool.setToolName(dto.getToolName());
+        existingTool.setToolType(dto.getToolType());
+        existingTool.setManufacturer(dto.getManufacturer());
+        existingTool.setModelNumber(dto.getModelNumber());
+        existingTool.setSerialNumber(dto.getSerialNumber());
+
+        existingTool.setQuantity(dto.getQuantity());
+        existingTool.setRemarks(dto.getRemarks());
+
+        // Make sure the facility entity is set properly
+        Facility facility = facilityRepository.findById(dto.getFacilityId())
+                .orElseThrow(() -> new RuntimeException("Facility not found"));
+        existingTool.setFacility(facility);
+
+
+        Tool savedTool = toolRepository.save(existingTool);
+
+        // Map entity to response DTO
+        ToolResponseDTO response = modelMapper.map(savedTool, ToolResponseDTO.class);
+        response.setFacilityId(facility.getId());
+        response.setLocation(facility.getSiteLocation());
+
+        return response;
+    }
+
 
 }
