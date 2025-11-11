@@ -1,9 +1,6 @@
 package com.toolmanagementsystem.demo.controllers;
 
-import com.toolmanagementsystem.demo.dto.BulkImportResult;
-import com.toolmanagementsystem.demo.dto.ToolPatchDTO;
-import com.toolmanagementsystem.demo.dto.ToolRequestDTO;
-import com.toolmanagementsystem.demo.dto.ToolResponseDTO;
+import com.toolmanagementsystem.demo.dto.*;
 import com.toolmanagementsystem.demo.services.ToolService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -15,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.util.List;
 
 @RestController
 @RequestMapping("/tool")
@@ -89,7 +87,10 @@ public class ToolController {
     }
 
 
-
+    @GetMapping("/search")
+    public List<ToolResponseDTO> searchTools(ToolQueryParamsDTO params) {
+        return toolService.searchTools(params);
+    }
 
 }
 

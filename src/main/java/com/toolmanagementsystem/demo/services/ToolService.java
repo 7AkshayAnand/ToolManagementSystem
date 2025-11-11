@@ -1,13 +1,13 @@
 package com.toolmanagementsystem.demo.services;
 
-import com.toolmanagementsystem.demo.dto.BulkImportResult;
-import com.toolmanagementsystem.demo.dto.ToolPatchDTO;
-import com.toolmanagementsystem.demo.dto.ToolRequestDTO;
-import com.toolmanagementsystem.demo.dto.ToolResponseDTO;
+import com.toolmanagementsystem.demo.dto.*;
 import com.toolmanagementsystem.demo.entity.Facility;
 import com.toolmanagementsystem.demo.entity.Tool;
+import com.toolmanagementsystem.demo.enums.ToolStatus;
+import com.toolmanagementsystem.demo.enums.ToolType;
 import com.toolmanagementsystem.demo.repository.FacilityRepository;
 import com.toolmanagementsystem.demo.repository.ToolRepository;
+import com.toolmanagementsystem.demo.spefication.ToolSpecification;
 import com.toolmanagementsystem.demo.utility.ExcelToolExporter;
 import com.toolmanagementsystem.demo.utility.ExcelToolParser;
 import io.swagger.v3.oas.annotations.servers.Server;
@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -227,4 +228,35 @@ public class ToolService {
     }
 
 
+    public List<ToolResponseDTO> searchTools(ToolQueryParamsDTO params) {
+
+        // Convert Strings to Enums (safe)
+        ToolType toolTypeEnum = params.getToolType() == null
+                ? null
+                : ToolType.valueOf(params.getToolType().toUpperCase());
+
+        ToolStatus statusEnum = params.getStatus() == null
+                ? null
+                : ToolStatus.valueOf(params.getStatus().toUpperCase());
+
+        // Use Specification.allOf similar to your Facility code
+        Specification<Tool> spec = Specification.allOf(
+
+                ToolSpecification.hasToolType(toolTypeEnum),
+                ToolSpecification.hasStatus(statusEnum),
+                ToolSpecification.hasToolName(params.getToolName()),
+                ToolSpecification.hasFacility(params.getFacilityId()),
+
+                ToolSpecification.createdFrom(params.getCreatedFrom()),
+                ToolSpecification.createdTo(params.getCreatedTo()),
+                ToolSpecification.updatedFrom(params.getUpdatedFrom()),
+                ToolSpecification.updatedTo(params.getUpdatedTo())
+        );
+
+        List<Tool> tools = toolRepository.findAll(spec);
+
+        return tools.stream()
+                .map(tool -> modelMapper.map(tool, ToolResponseDTO.class))
+                .toList();
+    }
 }
