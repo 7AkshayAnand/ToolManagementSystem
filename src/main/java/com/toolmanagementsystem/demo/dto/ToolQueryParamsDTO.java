@@ -28,6 +28,11 @@ public class ToolQueryParamsDTO {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime updatedTo;
+
+    private Integer page = 0;
+    private Integer size = 10;
+    private String sortBy = "id";
+    private String sortDir = "asc";
 }
 
 //work on locaiton part

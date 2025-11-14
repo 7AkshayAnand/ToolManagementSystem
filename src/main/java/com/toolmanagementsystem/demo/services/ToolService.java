@@ -16,6 +16,10 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.ResponseEntity;
@@ -246,8 +250,8 @@ public class ToolService {
         return response;
     }
 
-
-    public List<ToolResponseDTO> searchTools(ToolQueryParamsDTO params) {
+//below is only filter not pagination and sorting
+ /*   public List<ToolResponseDTO> searchTools(ToolQueryParamsDTO params) {
 
         // Convert Strings to Enums (safe)
         ToolType toolTypeEnum = params.getToolType() == null
@@ -284,6 +288,110 @@ public class ToolService {
                 .toList();
     }
 
+
+
+
+    public Page<ToolResponseDTO> searchToolsWithPagination(ToolQueryParamsDTO params) {
+
+        // Convert Strings to Enums
+        ToolType toolTypeEnum = params.getToolType() == null
+                ? null
+                : ToolType.valueOf(params.getToolType().toUpperCase());
+
+        // Build Specifications
+        Specification<Tool> spec = Specification.allOf(
+                ToolSpecification.hasToolType(toolTypeEnum),
+                ToolSpecification.hasStatuses(params.getStatuses()),
+                ToolSpecification.hasToolName(params.getToolName()),
+                ToolSpecification.hasFacility(params.getFacilityId()),
+                ToolSpecification.createdFrom(params.getCreatedFrom()),
+                ToolSpecification.createdTo(params.getCreatedTo()),
+                ToolSpecification.updatedFrom(params.getUpdatedFrom()),
+                ToolSpecification.updatedTo(params.getUpdatedTo())
+        );
+
+        // Sorting
+        Sort sort = params.getSortDir().equalsIgnoreCase("desc")
+                ? Sort.by(params.getSortBy()).descending()
+                : Sort.by(params.getSortBy()).ascending();
+
+        // Pagination
+        Pageable pageable = PageRequest.of(params.getPage(), params.getSize(), sort);
+
+        // Fetch paginated & sorted tools
+        Page<Tool> toolPage = toolRepository.findAll(spec, pageable);
+
+        // Convert to DTO Page
+        return toolPage.map(tool -> {
+            ToolResponseDTO dto = modelMapper.map(tool, ToolResponseDTO.class);
+            dto.setFacilityId(tool.getFacility().getId());
+            dto.setLocation(tool.getFacility().getSiteLocation());
+            return dto;
+        });
+    }*/
+
+
+
+
+
+
+
+    public List<ToolResponseDTO> searchTools(ToolQueryParamsDTO params) {
+
+        Specification<Tool> spec = buildToolSpecification(params);
+
+        List<Tool> tools = toolRepository.findAll(spec);
+
+        return tools.stream()
+                .map(tool -> {
+                    ToolResponseDTO dto = modelMapper.map(tool, ToolResponseDTO.class);
+                    dto.setFacilityId(tool.getFacility().getId());
+                    dto.setLocation(tool.getFacility().getSiteLocation());
+                    return dto;
+                })
+                .toList();
+    }
+
+    public Page<ToolResponseDTO> searchToolsWithPagination(ToolQueryParamsDTO params) {
+
+        Specification<Tool> spec = buildToolSpecification(params);
+
+        Sort sort = params.getSortDir().equalsIgnoreCase("desc")
+                ? Sort.by(params.getSortBy()).descending()
+                : Sort.by(params.getSortBy()).ascending();
+
+        Pageable pageable = PageRequest.of(params.getPage(), params.getSize(), sort);
+
+        Page<Tool> toolPage = toolRepository.findAll(spec, pageable);
+
+        return toolPage.map(tool -> {
+            ToolResponseDTO dto = modelMapper.map(tool, ToolResponseDTO.class);
+            dto.setFacilityId(tool.getFacility().getId());
+            dto.setLocation(tool.getFacility().getSiteLocation());
+            return dto;
+        });
+    }
+
+
+
+
+    private Specification<Tool> buildToolSpecification(ToolQueryParamsDTO params) {
+
+        ToolType toolTypeEnum = params.getToolType() == null
+                ? null
+                : ToolType.valueOf(params.getToolType().toUpperCase());
+
+        return Specification.allOf(
+                ToolSpecification.hasToolType(toolTypeEnum),
+                ToolSpecification.hasStatuses(params.getStatuses()),
+                ToolSpecification.hasToolName(params.getToolName()),
+                ToolSpecification.hasFacility(params.getFacilityId()),
+                ToolSpecification.createdFrom(params.getCreatedFrom()),
+                ToolSpecification.createdTo(params.getCreatedTo()),
+                ToolSpecification.updatedFrom(params.getUpdatedFrom()),
+                ToolSpecification.updatedTo(params.getUpdatedTo())
+        );
+    }
 
     public List<ToolResponseDTO> getToolsByFacilityId(Long facilityId) {
 

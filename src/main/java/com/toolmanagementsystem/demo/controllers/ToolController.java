@@ -5,6 +5,7 @@ import com.toolmanagementsystem.demo.services.ToolService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -110,8 +111,8 @@ public class ToolController {
 
 
     @GetMapping("/search")
-    public List<ToolResponseDTO> searchTools(ToolQueryParamsDTO params) {
-        return toolService.searchTools(params);
+    public ResponseEntity<Page<ToolResponseDTO>> searchTools(ToolQueryParamsDTO params) {
+        return ResponseEntity.ok(toolService.searchToolsWithPagination(params));
     }
 
     @GetMapping("/facility/{facilityId}")
