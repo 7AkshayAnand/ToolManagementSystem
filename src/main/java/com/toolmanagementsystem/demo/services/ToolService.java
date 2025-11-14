@@ -130,16 +130,35 @@ public class ToolService {
 
 
 
-    public ByteArrayInputStream exportTools() {
+//    public ByteArrayInputStream exportTools() {
+//
+//        List<Tool> tools = toolRepository.findAll();
+//
+//        List<ToolResponseDTO> dtoList = tools.stream()
+//                .map(t -> modelMapper.map(t, ToolResponseDTO.class))
+//                .toList();
+//
+//        return exporter.exportTools(dtoList);
+//    }
 
-        List<Tool> tools = toolRepository.findAll();
 
-        List<ToolResponseDTO> dtoList = tools.stream()
-                .map(t -> modelMapper.map(t, ToolResponseDTO.class))
-                .toList();
+    public ByteArrayInputStream exportTools(List<ToolResponseDTO> filterTools) {
 
-        return exporter.exportTools(dtoList);
+        List<ToolResponseDTO> toolsToExport;
+
+        if (filterTools == null || filterTools.isEmpty()) {
+            // No filter passed → fetch all tools
+            toolsToExport = toolRepository.findAll().stream()
+                    .map(t -> modelMapper.map(t, ToolResponseDTO.class))
+                    .toList();
+        } else {
+            // Filters exist → use filtered list
+            toolsToExport = filterTools;
+        }
+
+        return exporter.exportTools(toolsToExport);
     }
+
 
 
     public ResponseEntity<ToolResponseDTO> getToolById(Long id) {

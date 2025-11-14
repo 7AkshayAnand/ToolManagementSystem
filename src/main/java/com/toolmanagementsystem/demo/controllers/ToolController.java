@@ -56,15 +56,37 @@ public class ToolController {
         return toolService.getToolById(id);
     }
 
-    @GetMapping("/export")
-    public ResponseEntity<byte[]> exportTools() {
+   /* @GetMapping("/export")
+    public ResponseEntity<byte[]> exportTools(ToolQueryParamsDTO params) {
 
         ByteArrayInputStream in = toolService.exportTools();
+//        // Step 1: Get filtered tools (reuse your search logic)
+//        List<ToolResponseDTO> filteredTools = toolService.searchTools(params);
+//
+//        // Step 2: Export filtered data
+//        ByteArrayInputStream in = toolService.exportTools(filteredTools);
 
         return ResponseEntity.ok()
                 .header("Content-Disposition", "attachment; filename=tools.xlsx")
                 .body(in.readAllBytes());
+    }*/
+
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportTools(ToolQueryParamsDTO params) {
+
+        // 1️⃣ Apply filters using same search logic
+        List<ToolResponseDTO> filteredTools = toolService.searchTools(params);
+
+        // 2️⃣ Export filtered list
+        ByteArrayInputStream in = toolService.exportTools(filteredTools);
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=tools.xlsx")
+                .header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                .body(in.readAllBytes());
     }
+
 
     @DeleteMapping("/delete/{Id}")
     public ResponseEntity<String> deleteById(Long Id){
