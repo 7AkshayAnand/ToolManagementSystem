@@ -5,6 +5,8 @@ import com.toolmanagementsystem.demo.enums.ToolStatus;
 import com.toolmanagementsystem.demo.enums.ToolType;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
+
 public class ToolSpecification {
 
 
@@ -15,10 +17,17 @@ public class ToolSpecification {
                         cb.equal(root.get("toolType"), toolType);
     }
 
-    public static Specification<Tool> hasStatus(ToolStatus status) {
+//    public static Specification<Tool> hasStatus(ToolStatus status) {
+//        return (root, query, cb) ->
+//                status == null ? null :
+//                        cb.equal(root.get("status"), status);
+//    }
+
+    public static Specification<Tool> hasStatuses(List<ToolStatus> statuses) {
         return (root, query, cb) ->
-                status == null ? null :
-                        cb.equal(root.get("status"), status);
+                (statuses == null || statuses.isEmpty())
+                        ? null
+                        : root.get("status").in(statuses);
     }
 
     public static Specification<Tool> hasToolName(String toolName) {

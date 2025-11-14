@@ -92,6 +92,13 @@ public class ToolController {
         return toolService.searchTools(params);
     }
 
+    @GetMapping("/facility/{facilityId}")
+    public ResponseEntity<List<ToolResponseDTO>> getToolsByFacilityId(
+            @PathVariable Long facilityId) {
+
+        List<ToolResponseDTO> tools = toolService.getToolsByFacilityId(facilityId);
+        return ResponseEntity.ok(tools);
+    }
 }
 
 

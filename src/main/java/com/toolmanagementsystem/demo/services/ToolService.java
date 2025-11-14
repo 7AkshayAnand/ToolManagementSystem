@@ -235,15 +235,15 @@ public class ToolService {
                 ? null
                 : ToolType.valueOf(params.getToolType().toUpperCase());
 
-        ToolStatus statusEnum = params.getStatus() == null
-                ? null
-                : ToolStatus.valueOf(params.getStatus().toUpperCase());
+//        ToolStatus statusEnum = params.getStatus() == null
+//                ? null
+//                : ToolStatus.valueOf(params.getStatus().toUpperCase());
 
         // Use Specification.allOf similar to your Facility code
         Specification<Tool> spec = Specification.allOf(
 
                 ToolSpecification.hasToolType(toolTypeEnum),
-                ToolSpecification.hasStatus(statusEnum),
+                ToolSpecification.hasStatuses(params.getStatuses()),
                 ToolSpecification.hasToolName(params.getToolName()),
                 ToolSpecification.hasFacility(params.getFacilityId()),
 
@@ -256,7 +256,27 @@ public class ToolService {
         List<Tool> tools = toolRepository.findAll(spec);
 
         return tools.stream()
-                .map(tool -> modelMapper.map(tool, ToolResponseDTO.class))
+                .map(tool -> {
+                    ToolResponseDTO dto = modelMapper.map(tool, ToolResponseDTO.class);
+                    dto.setFacilityId(tool.getFacility().getId());
+                    dto.setLocation(tool.getFacility().getSiteLocation()); // FIXED
+                    return dto;
+                })
+                .toList();
+    }
+
+
+    public List<ToolResponseDTO> getToolsByFacilityId(Long facilityId) {
+
+        List<Tool> tools = toolRepository.findByFacilityId(facilityId);
+
+        return tools.stream()
+                .map(tool -> {
+                    ToolResponseDTO dto = modelMapper.map(tool, ToolResponseDTO.class);
+                    dto.setFacilityId(tool.getFacility().getId());
+                    dto.setLocation(tool.getFacility().getSiteLocation()); // IMPORTANT
+                    return dto;
+                })
                 .toList();
     }
 }

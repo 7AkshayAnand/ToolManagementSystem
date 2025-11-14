@@ -1,9 +1,11 @@
 package com.toolmanagementsystem.demo.dto;
 
+import com.toolmanagementsystem.demo.enums.ToolStatus;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class ToolQueryParamsDTO {
@@ -11,7 +13,7 @@ public class ToolQueryParamsDTO {
     private Long id;
     private String toolName;
     private String toolType;
-    private String status;
+    private List<ToolStatus> statuses;;
     private Long facilityId;
 
 
