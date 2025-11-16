@@ -7,6 +7,7 @@ import com.toolmanagementsystem.demo.entity.Facility;
 import com.toolmanagementsystem.demo.enums.SiteLocation;
 import com.toolmanagementsystem.demo.enums.SiteType;
 import com.toolmanagementsystem.demo.services.FacilityService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.List;
 @RequestMapping("/facility")
 @AllArgsConstructor
 @Slf4j
+@Tag(name="Facility APis",description = "Facility CURD Operation")
 public class FacilityController {
 
     private final FacilityService facilityService;

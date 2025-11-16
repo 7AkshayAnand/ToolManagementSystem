@@ -1,5 +1,6 @@
 package com.toolmanagementsystem.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.toolmanagementsystem.demo.enums.SiteLocation;
 import com.toolmanagementsystem.demo.enums.SiteType;
 import jakarta.persistence.*;
@@ -10,10 +11,12 @@ import java.util.List;
 
 @Entity
 @Table(name = "facilities")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class Facility {
 
     @Id
@@ -48,7 +51,8 @@ public class Facility {
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean isActive; // Facility operational or not
 
-    @OneToMany(mappedBy = "facility", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "facility")
+    @JsonIgnore
     private List<Tool> tools = new ArrayList<>();
 
 

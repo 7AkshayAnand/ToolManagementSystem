@@ -7,12 +7,11 @@ import lombok.*;
 
 @Entity
 @Table(name = "tools")
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Getter
+@Builder
 
 public class Tool extends AuditableEntity{
 

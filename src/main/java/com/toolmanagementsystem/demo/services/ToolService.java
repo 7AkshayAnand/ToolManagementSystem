@@ -49,11 +49,17 @@ public class ToolService {
         Facility facility = facilityRepository.findById(toolRequestDTO.facilityId)
                 .orElseThrow(() -> new RuntimeException("Facility not found"));
         Tool tool = modelMapper.map(toolRequestDTO, Tool.class);
+        tool.setId(null);
+        log.error("its should be an insert call  with facility  id = "+tool.getFacility().getId());
+        log.error("the author name is line 1 "+tool.getCreatedBy());
         log.trace("inside service manufac details are "+tool.getManufacturer());
         tool.setFacility(facility);
         log.info("we have set the facility  as "+tool.getFacility());
         Tool savedTool=toolRepository.save(tool);
+        log.error("the author name is 2 "+savedTool.getCreatedBy());
         ToolResponseDTO response = modelMapper.map(savedTool, ToolResponseDTO.class);
+
+        log.error("the author name is 3"+response.getCreatedBy());
         log.trace("now in response the manufacturar is "+response.getManufacturer());
         response.location = facility.getSiteLocation();
         response.facilityId = facility.getId();
@@ -169,6 +175,8 @@ public class ToolService {
 
         Tool tool = toolRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Tool not found"));
+
+
 
         ToolResponseDTO dto = modelMapper.map(tool, ToolResponseDTO.class);
 

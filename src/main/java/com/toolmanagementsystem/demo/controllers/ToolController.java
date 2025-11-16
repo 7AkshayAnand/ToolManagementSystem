@@ -2,6 +2,7 @@ package com.toolmanagementsystem.demo.controllers;
 
 import com.toolmanagementsystem.demo.dto.*;
 import com.toolmanagementsystem.demo.services.ToolService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/tool")
 @AllArgsConstructor
 @Slf4j
+@Tag(name="Tool APis",description = "Tool CURD Operation")
 public class ToolController {
 
   private final  ToolService toolService;
@@ -90,9 +92,10 @@ public class ToolController {
 
 
     @DeleteMapping("/delete/{Id}")
-    public ResponseEntity<String> deleteById(Long Id){
-        String result=toolService.deleteById(Id);
-        return new ResponseEntity<>(result,HttpStatus.NO_CONTENT);
+    public ResponseEntity<String> deleteById(@PathVariable
+                                                 Long Id){
+        toolService.deleteById(Id);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/updateTool/{id}")
