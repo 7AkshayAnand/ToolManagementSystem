@@ -10,14 +10,14 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -59,4 +59,10 @@ public class AuthController {
 
         return ResponseEntity.ok(loginResponseDto);
     }
+
+    @GetMapping("/healthStatus")
+    public ResponseEntity<?> getHealthStatus(){
+        return ResponseEntity.ok(Map.of("status", "Up"));
+    }
+
 }

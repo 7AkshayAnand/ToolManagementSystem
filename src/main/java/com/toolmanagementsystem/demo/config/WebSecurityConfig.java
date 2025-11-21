@@ -27,9 +27,20 @@ public class WebSecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
 
 
-    private static final String[] publicRoutes = {
-             "/auth/**", "/home.html"
-    };
+//    private static final String[] publicRoutes = {
+//             "/auth/**", "/home.html","/v3/api-docs","swagger-ui/index.html","/actuator/**"
+//    };
+private static final String[] publicRoutes = {
+        "/auth/**",
+        "/home.html",
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/swagger-ui.html",
+        "/swagger-resources/**",
+        "/webjars/**",
+        "/actuator/**"
+};
+
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
